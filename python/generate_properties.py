@@ -1,11 +1,15 @@
+try:
+    import vim
+except: 
+    pass
+
 template = """private ###primitive###Property###type### ###name### = new Simple###primitive###Property###brackets###(this, "###name###");
-public ###primitive###Property###type### ###name###Property() {return this.###name###}
+public ###primitive###Property###type### ###name###Property() {return this.###name###;}
 public ###interact_primitive######type### get###bigName###() {return this.###name###.get();}
 public void set###bigName###(###interact_primitive######type### ###name###) {this.###name###.set(###name###);}"""
 
 
 def generate_property(primitive, name, obj_type=""):
-    primitive = primitive.capitalize()
     interact_primitive = primitive
     brackets = ""
     
@@ -28,16 +32,22 @@ def generate_property(primitive, name, obj_type=""):
 
     return output
 
-def print_hello():
-    print("hello!")
+def gen_prop(args):
+    if len(args) not in [2, 3]:
+        print("Not enough arguments!")
+        return
+    
+    primitive = args[0]
+    name = args[1]
+    obj_type = ""
+    if len(args) == 3:
+        obj_type = args[2]
 
-#while True:
-#    args = raw_input(">>> ")
-#    args = args.split(" ")
-#    
-#    if len(args) == 2:
-#        x = generate_property(args[0], args[1])
-#    elif len(args) == 3:
-        x = generate_property(args[0], args[1], args[2])
+    prop = generate_property(primitive, name, obj_type).split("\n")
+    
+    b = vim.current.buffer
+    (row, col) = vim.current.window.cursor
 
-    print(x)
+    row = row -1
+    b[row:row] = prop
+    

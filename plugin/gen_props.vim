@@ -1,5 +1,5 @@
 if !has('python')
-    echo "Error: vim not compile with python support"
+    echo "Error: vim not compiled with python support"
     finish
 endif
 
@@ -12,9 +12,11 @@ import vim
 plugin_root_dir = vim.eval('s:plugin_root_dir')
 python_root_dir = normpath(join(plugin_root_dir, '..', 'python'))
 sys.path.insert(0, python_root_dir)
-import sample
+import generate_properties as gp
 EOF
 
-function! PrintHello()
-    python print_hello()
+function! GenProp(...)
+    python gp.gen_prop(vim.eval("a:000"))
 endfunction
+
+command -nargs=+ GenProp call GenProp(<f-args>)
