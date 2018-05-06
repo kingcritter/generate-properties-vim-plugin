@@ -33,4 +33,4 @@ public ObservableList<Person> getEmployees() {return this.employees.get();}
 public void setEmployees(ObservableList<Person> employees) {this.employees.set(employees);}
 ```
 
-Also note that with lists, it helpfully uses `ObservableList` as the getter/setter type.
+Also note that with `List`, `Map`, and `Set` it helpfully uses `Observable[List|Map|Set]` as the getter/setter type.

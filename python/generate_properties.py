@@ -1,16 +1,17 @@
+from string import Template
 try:
     import vim
 except: 
     pass
 
-template = """private ###primitive###Property###type### ###name### = new Simple###primitive###Property###brackets###(this, "###name###");
-public ###primitive###Property###type### ###name###Property() {return this.###name###;}
-public ###interact_primitive######type### get###bigName###() {return this.###name###.get();}
-public void set###bigName###(###interact_primitive######type### ###name###) {this.###name###.set(###name###);}"""
+template = Template("""private ${_primitive}Property${_obj_type} ${_name} = new Simple${_primitive}Property${_brackets}(this, "${_name}");
+public ${_primitive}Property${_obj_type} ${_name}Property() {return this.${_name};}
+public ${_get_and_set_type}${_obj_type} get${_big_name}() {return this.${_name}.get();}
+public void set${_big_name}(${_get_and_set_type}${_obj_type} ${_name}) {this.${_name}.set(${_name});}""")
 
 
 def generate_property(primitive, name, obj_type=""):
-    interact_primitive = primitive
+    get_and_set_type = primitive
     brackets = ""
     
     if obj_type:
@@ -18,17 +19,17 @@ def generate_property(primitive, name, obj_type=""):
         primitive_or_type = obj_type
         brackets = "<>"
 
-    if primitive == "List":
-        interact_primitive = "ObservableList"
+    if primitive in ["List", "Map", "Set"]:
+        get_and_set_type = "Observable" + primitive
 
-    bigName = name[0].upper() + name[1:]
+    big_name = name[0].upper() + name[1:]
 
-    output = template.replace("###primitive###", primitive)
-    output = output.replace("###name###", name)
-    output = output.replace("###bigName###", bigName)
-    output = output.replace("###type###", obj_type)
-    output = output.replace("###interact_primitive###", interact_primitive)
-    output = output.replace("###brackets###", brackets)
+    output = template.substitute(_primitive=primitive,
+                                 _name=name,
+                                 _big_name=big_name,
+                                 _obj_type=obj_type,
+                                 _get_and_set_type=get_and_set_type,
+                                 _brackets=brackets)
 
     return output
 
