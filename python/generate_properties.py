@@ -10,7 +10,7 @@ public ${get_and_set_type} get${big_name}() {return this.${name}.get();}
 public void set${big_name}(${get_and_set_type} ${name}) {this.${name}.set(${name});}""")
 
 
-def generate_property(primitive, name, obj_type):
+def generate_property(primitive, name, obj_type, obj_type_value):
     get_and_set_type = primitive
     brackets = ""
     generic = ""
@@ -20,8 +20,9 @@ def generate_property(primitive, name, obj_type):
         generic = "<{}>".format(obj_type)
     if primitive in ["List", "Map", "Set"]:
         brackets = "<>"
+        if primitive == "Map":
+            generic = "<{}, {}>".format(obj_type, obj_type_value)
         get_and_set_type = "Observable{}{}".format(primitive, generic)
-
     elif primitive == "Object":
         get_and_set_type = obj_type
     else:
@@ -39,17 +40,21 @@ def generate_property(primitive, name, obj_type):
     return output
 
 def gen_prop(args):
-    if len(args) not in [2, 3]:
-        print("Usage: :GenProp PropertyType name [ElementType]")
+    if len(args) not in range(2, 5):
+        print("Usage: :GenProp PropertyType name [ElementType][ValueType (for Map)]")
         return
     
     primitive = args[0]
     name = args[1]
     obj_type = ""
+    obj_type_value = "" # for Map
     if len(args) == 3:
         obj_type = args[2]
+    if len(args) == 4:
+        obj_type = args[2]
+        obj_type_value = args[3]
 
-    prop = generate_property(primitive, name, obj_type).split("\n")
+    prop = generate_property(primitive, name, obj_type, obj_type_value).split("\n")
     
     b = vim.current.buffer
     (row, col) = vim.current.window.cursor

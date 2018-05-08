@@ -34,3 +34,11 @@ public void setEmployees(ObservableList<Person> employees) {this.employees.set(e
 ```
 
 Also note that with `List`, `Map`, and `Set` it helpfully uses `Observable[List|Map|Set]` as the getter/setter type.
+
+Speaking of `Map`, just pass in a fourth argument for the key type:
+```java
+private MapProperty<Key, Value> dictionary = new SimpleMapProperty<>(this, "dictionary");
+public MapProperty<Key, Value> dictionaryProperty() {return this.dictionary;}
+public ObservableMap<Key, Value> getDictionary() {return this.dictionary.get();}
+public void setDictionary(ObservableMap<Key, Value> dictionary) {this.dictionary.set(dictionary);}
+```
